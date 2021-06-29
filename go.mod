@@ -1,3 +1,3 @@
-module github.com/gussf/go-bookstore
+module github.com/gussf/bookstore
 
 go 1.16
