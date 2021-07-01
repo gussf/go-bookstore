@@ -1,4 +1,2 @@
-# go-bookstore
-
-# A simple bookstore microservice 
-### Intended for learning communication protocols and database access in Go
+## A simple bookstore microservice 
+#### Intended for learning communication protocols and database access in Go
