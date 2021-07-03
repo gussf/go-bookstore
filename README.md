@@ -2,7 +2,6 @@
 #### Intended for learning communication protocols and database access in Go
 
 
-##### Help
 ``` shell 
 # pull and run docker image
 docker pull gussf/go-bookstore:v0.1
