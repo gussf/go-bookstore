@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/gussf/bookstore/handlers"
+	"github.com/gussf/go-bookstore/handlers"
 )
 
 var addr = ":15000"
