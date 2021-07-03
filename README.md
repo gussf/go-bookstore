@@ -1,6 +1,7 @@
 ## A simple bookstore microservice 
 #### Intended for learning communication protocols and database access in Go
 
+[![GoDoc](https://godoc.org/github.com/github.com/gussf/go-bookstore/?status.svg)](https://pkg.go.dev/github.com/gussf/go-bookstore/?tab=doc)
 
 ``` shell 
 # pull and run docker image
