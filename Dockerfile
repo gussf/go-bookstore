@@ -6,4 +6,4 @@ WORKDIR /go/src/github.com/gussf/go-bookstore/
 RUN go install .
 CMD [ "bookstore" ]
 
-EXPOSE 8080
+EXPOSE 15000
