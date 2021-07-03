@@ -12,6 +12,8 @@ import (
 	"github.com/gussf/bookstore/handlers"
 )
 
+var addr = ":15000"
+
 func main() {
 
 	l := log.New(os.Stdout, "bookstore ", log.LstdFlags)
@@ -22,14 +24,14 @@ func main() {
 	sm.Handle("/books", bh)
 
 	s := http.Server{
-		Addr:         "localhost:15000",
+		Addr:         addr,
 		Handler:      sm,
 		ErrorLog:     l,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
 	}
 
-	fmt.Println("Starting server on localhost:15000...")
+	fmt.Println("Starting server on", addr, "...")
 
 	go func() {
 		err := s.ListenAndServe()
@@ -44,7 +46,7 @@ func main() {
 
 	// Block until a signal is received.
 	sig := <-c
-	log.Println("Signal:", sig)
+	l.Println("Signal:", sig)
 
 	ctx, f := context.WithTimeout(context.Background(), 30*time.Second)
 	f()

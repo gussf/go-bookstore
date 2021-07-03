@@ -20,10 +20,11 @@ func (b *Books) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	case http.MethodGet:
 		fmt.Println("GET Method detected")
+		rw.WriteHeader(http.StatusOK)
 		fmt.Println(r)
-
 	case http.MethodPost:
 		fmt.Println("POST Method detected")
+		rw.WriteHeader(http.StatusCreated)
 		fmt.Println(r)
 	default:
 		rw.WriteHeader(http.StatusMethodNotAllowed)

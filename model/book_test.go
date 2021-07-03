@@ -3,7 +3,7 @@ package model_test
 import (
 	"testing"
 
-	"github.com/gussf/bookstore/internal/model"
+	"github.com/gussf/bookstore/model"
 )
 
 func TestBook(t *testing.T) {
