@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gussf/go-bookstore/database"
 )
 
 type Books struct {
 	l *log.Logger
+	c *database.Connection
 }
 
-func NewBooks(l *log.Logger) *Books {
-	return &Books{l}
+func NewBooks(l *log.Logger, c *database.Connection) *Books {
+	return &Books{l, c}
 }
 
 func (b *Books) ServeHTTP(rw http.ResponseWriter, r *http.Request) {

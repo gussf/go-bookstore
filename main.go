@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gussf/go-bookstore/database"
 	"github.com/gussf/go-bookstore/handlers"
 )
 
@@ -18,7 +19,8 @@ func main() {
 
 	l := log.New(os.Stdout, "bookstore ", log.LstdFlags)
 
-	bh := handlers.NewBooks(l)
+	conn := database.NewConnection()
+	bh := handlers.NewBooks(l, conn)
 
 	sm := http.NewServeMux()
 	sm.Handle("/books", bh)
