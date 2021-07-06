@@ -28,6 +28,18 @@ func main() {
 
 	defer conn.Close()
 
+	// Testing func
+	////////////////////////////////////
+	list, err := conn.SelectAllBooks()
+	if err != nil {
+		l.Fatal(err)
+	}
+
+	for _, book := range list {
+		fmt.Println(book)
+	}
+	////////////////////////////////////
+
 	sm := http.NewServeMux()
 	sm.Handle("/books", bh)
 

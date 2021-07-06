@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gussf/go-bookstore/model"
+
 	_ "github.com/lib/pq"
 )
 
@@ -49,4 +51,25 @@ func NewConnection() (c *Connection, err error) {
 // Closes a previously instantiated database connection
 func (c *Connection) Close() error {
 	return c.db.Close()
+}
+
+func (c *Connection) SelectAllBooks() ([]model.Book, error) {
+
+	stmt, err := c.db.Query("SELECT * FROM books")
+	if err != nil {
+		return nil, err
+	}
+
+	var bookList []model.Book
+	for stmt.Next() {
+
+		var book model.Book
+		err = stmt.Scan(&book.ID, &book.Title, &book.Author, &book.Copies, &book.Price, &book.CreationDate)
+		if err != nil {
+			return nil, err
+		}
+
+		bookList = append(bookList, book)
+	}
+	return bookList, nil
 }

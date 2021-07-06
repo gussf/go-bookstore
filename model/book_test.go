@@ -9,7 +9,7 @@ import (
 func TestBook(t *testing.T) {
 	_ = model.Book{
 		Title:  "Spark Joy",
-		Author: []string{"Marie Kondō"},
+		Author: "Marie Kondō",
 		Copies: 3,
 		Price:  15,
 	}
