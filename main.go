@@ -24,6 +24,7 @@ func main() {
 		l.Fatalf("Connection to database failed: %s\n", err)
 		os.Exit(1)
 	}
+
 	bh := handlers.NewBooks(l, conn)
 
 	defer conn.Close()

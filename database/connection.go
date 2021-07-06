@@ -14,14 +14,8 @@ type Connection struct {
 	db *sql.DB
 }
 
-// NewConnection
-// Connects to a database according to the following environment variables:
-// DRIVER  		ex: postgres
-// USER    		ex: db_user
-// HOST   	 	ex: localhost
-// PORT	   		ex: 5432
-// PASSWORD		ex: 12345
-// DBNAME 		ex: database_name
+// Connects to a database according to the following environment variables: DRIVER, USER, HOST, PORT, PASSWORD, DBNAME.
+// Example:  DRIVER=postgres, USER=db_user, HOST=localhost, PORT=5432, PASSWORD=12345, DBNAME=database_name
 func NewConnection() (c *Connection, err error) {
 
 	fmt.Println("Connecting to database ...")
@@ -47,7 +41,6 @@ func NewConnection() (c *Connection, err error) {
 	return &Connection{db}, nil
 }
 
-// Close
 // Closes a previously instantiated database connection
 func (c *Connection) Close() error {
 	return c.db.Close()
@@ -62,14 +55,13 @@ func (c *Connection) SelectAllBooks() ([]model.Book, error) {
 
 	var bookList []model.Book
 	for stmt.Next() {
-
 		var book model.Book
 		err = stmt.Scan(&book.ID, &book.Title, &book.Author, &book.Copies, &book.Price, &book.CreationDate)
 		if err != nil {
 			return nil, err
 		}
-
 		bookList = append(bookList, book)
 	}
+
 	return bookList, nil
 }
