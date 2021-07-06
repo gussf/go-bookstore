@@ -19,8 +19,14 @@ func main() {
 
 	l := log.New(os.Stdout, "bookstore ", log.LstdFlags)
 
-	conn := database.NewConnection()
+	conn, err := database.NewConnection()
+	if err != nil {
+		l.Fatalf("Connection to database failed: %s\n", err)
+		os.Exit(1)
+	}
 	bh := handlers.NewBooks(l, conn)
+
+	defer conn.Close()
 
 	sm := http.NewServeMux()
 	sm.Handle("/books", bh)
