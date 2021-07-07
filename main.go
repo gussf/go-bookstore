@@ -24,25 +24,12 @@ func main() {
 		l.Fatalf("Connection to database failed: %s\n", err)
 		os.Exit(1)
 	}
+	defer conn.Close()
 
 	bh := handlers.NewBooks(l, conn)
 
-	defer conn.Close()
-
-	// Testing func
-	////////////////////////////////////
-	list, err := conn.SelectAllBooks()
-	if err != nil {
-		l.Fatal(err)
-	}
-
-	for _, book := range list {
-		fmt.Println(book)
-	}
-	////////////////////////////////////
-
 	sm := http.NewServeMux()
-	sm.Handle("/books", bh)
+	sm.Handle("/books/", bh)
 
 	s := http.Server{
 		Addr:         addr,
