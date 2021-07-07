@@ -31,7 +31,10 @@ func NewConnection() (c *Connection, err error) {
 		"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	db, err := sql.Open(driver, connectionString)
-
+	if err != nil {
+		return nil, err
+	}
+	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}
