@@ -3,7 +3,12 @@
 
 [![GoDoc](https://godoc.org/github.com/github.com/gussf/go-bookstore/?status.svg)](https://pkg.go.dev/github.com/gussf/go-bookstore/?tab=doc)
 
+``` shell
+go get github.com/gussf/go-bookstore
+```
+
 ``` shell 
+# OUT OF DATE
 # pull and run docker image
 docker pull gussf/go-bookstore:v0.1
 docker run -p 15000:15000 gussf/go-bookstore:v0.1
