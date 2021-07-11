@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/gussf/go-bookstore/model"
 )
@@ -51,4 +52,17 @@ func scanBookFrom(stmt *sql.Rows) (*model.Book, error) {
 		return nil, err
 	}
 	return &book, nil
+}
+
+func (c *Connection) InsertBook(b model.Book) error {
+	res, err := c.db.Exec("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp)", b.Title, b.Author, b.Copies, b.Price)
+	if err != nil {
+		return err
+	}
+	n, _ := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Inserted rows: %d\n", n)
+	return nil
 }
