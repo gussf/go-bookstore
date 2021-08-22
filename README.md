@@ -1,4 +1,4 @@
-## A simple bookstore microservice 
+## A simple bookstore API 
 #### Intended for learning communication protocols and database access in Go
 #### This project is developed using a AWS RDS running PostgreSQL
 
@@ -34,14 +34,15 @@ CREATE TABLE books (
 <br>
 <hr>
 
-``` shell
-# List all books
-curl -v localhost:15000/books/
+# To Do
+* Create a CI/CD pipeline (deploy to AWS ECS Fargate)
+* Handle DELETE http method
+* Authentication (JWT?)
+* Implement gRPC?
 
-# List specific book 
-curl -v localhost:15000/books/1
-```
-
+<hr> 
+<br>
+<br> 
 ``` shell 
 # OUT OF DATE
 # pull and run docker image
