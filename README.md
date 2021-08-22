@@ -42,13 +42,10 @@ CREATE TABLE books (
 
 <hr> 
 <br>
-<br> 
 
 ``` shell 
-# OUT OF DATE
 # pull and run docker image
-docker pull gussf/go-bookstore:v0.1
-docker run -p 15000:15000 gussf/go-bookstore:v0.1
+docker pull gussf/bookstore
+# sh .env  # Load environment variables
+./run-sh
 ``` 
-
-
