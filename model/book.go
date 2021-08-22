@@ -4,9 +4,9 @@ import "time"
 
 type Book struct {
 	ID           int
-	Title        string `json:"title"`
-	Author       string `json:"author"`
-	Copies       int    `json:"copies"`
-	Price        int    `json:"price"`
+	Title        string `json:"title" validate:"required"`
+	Author       string `json:"author" validate:"required"`
+	Copies       int    `json:"copies" validate:"required"`
+	Price        int    `json:"price" validate:"required"`
 	CreationDate time.Time
 }

@@ -54,15 +54,14 @@ func scanBookFrom(stmt *sql.Rows) (*model.Book, error) {
 	return &book, nil
 }
 
-func (c *Connection) InsertBook(b model.Book) error {
-	res, err := c.db.Exec("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp)", b.Title, b.Author, b.Copies, b.Price)
+func (c *Connection) InsertBook(b *model.Book) error {
+	lastInsertedId := 0
+	row := c.db.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id", b.Title, b.Author, b.Copies, b.Price)
+	err := row.Scan(&lastInsertedId)
 	if err != nil {
 		return err
 	}
-	n, _ := res.RowsAffected()
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Inserted rows: %d\n", n)
+	fmt.Printf("New book inserted with id=%d\n", lastInsertedId)
+	b.ID = lastInsertedId
 	return nil
 }
