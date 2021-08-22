@@ -43,6 +43,7 @@ CREATE TABLE books (
 <hr> 
 <br>
 <br> 
+
 ``` shell 
 # OUT OF DATE
 # pull and run docker image
