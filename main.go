@@ -13,7 +13,7 @@ import (
 	"github.com/gussf/go-bookstore/handlers"
 )
 
-var addr = ":15000"
+var addr = "0.0.0.0:15000"
 
 func main() {
 

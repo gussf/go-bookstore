@@ -1,9 +1,9 @@
 FROM golang
 
-ADD . /go/src/github.com/gussf/go-bookstore/
-WORKDIR /go/src/github.com/gussf/go-bookstore/
+ADD . /src/go-bookstore/
+WORKDIR /src/go-bookstore/
 
 RUN go install .
-CMD [ "bookstore" ]
+# RUN go-bookstore
 
 EXPOSE 15000
