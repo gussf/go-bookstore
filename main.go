@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/gussf/go-bookstore/database"
+	"github.com/gorilla/mux"
 	"github.com/gussf/go-bookstore/handlers"
 )
 
@@ -17,24 +17,15 @@ var addr = "0.0.0.0:15000"
 
 func main() {
 
-	l := log.New(os.Stdout, "bookstore ", log.LstdFlags)
+	r := mux.NewRouter()
+	s := r.PathPrefix("/api/v1").Subrouter()
+	s.HandleFunc("/", handlers.Index)
+	s.HandleFunc("/book/{id:[0-9]+}", handlers.GetBook).Methods("GET")
 
-	conn, err := database.NewConnection()
-	if err != nil {
-		l.Fatalf("Connection to database failed: %s\n", err)
-		os.Exit(1)
-	}
-	defer conn.Close()
-
-	bh := handlers.NewBooks(l, conn)
-
-	sm := http.NewServeMux()
-	sm.Handle("/books/", bh)
-
-	s := http.Server{
+	srv := http.Server{
 		Addr:         addr,
-		Handler:      sm,
-		ErrorLog:     l,
+		Handler:      s,
+		ErrorLog:     log.Default(),
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
 	}
@@ -42,9 +33,9 @@ func main() {
 	fmt.Println("Starting server on", addr, "...")
 
 	go func() {
-		err := s.ListenAndServe()
+		err := srv.ListenAndServe()
 		if err != nil {
-			l.Fatalf("Failed to start server: %s\n", err)
+			panic(err)
 			os.Exit(1)
 		}
 	}()
@@ -54,10 +45,10 @@ func main() {
 
 	// Block until a signal is received.
 	sig := <-c
-	l.Println("Signal:", sig)
+	fmt.Println("Signal:", sig)
 
 	ctx, f := context.WithTimeout(context.Background(), 30*time.Second)
 	f()
-	s.Shutdown(ctx)
+	srv.Shutdown(ctx)
 
 }

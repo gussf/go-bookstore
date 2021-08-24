@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux"
 	"github.com/gussf/go-bookstore/database"
 	"github.com/gussf/go-bookstore/model"
 )
@@ -25,13 +26,25 @@ type Books struct {
 var enc *json.Encoder
 var dec *json.Decoder
 
+func Index(w http.ResponseWriter, r *http.Request) {
+	httpCode := http.StatusOK
+	resp := &model.ErrorReport{Message: "Welcome to the go-bookstore API", HttpCode: httpCode}
+	w.WriteHeader(resp.HttpCode)
+	json.NewEncoder(w).Encode(resp)
+}
+
+func GetBook(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	httpCode := http.StatusOK
+	resp := &model.ErrorReport{Message: "Getting book with id " + vars["id"], HttpCode: httpCode}
+	json.NewEncoder(w).Encode(resp)
+}
+
 func NewBooks(l *log.Logger, c *database.Connection) *Books {
 	return &Books{l, c, validator.New()}
 }
 
 func (b *Books) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	enc = json.NewEncoder(rw)
-	dec = json.NewDecoder(r.Body)
 
 	var message string
 	var httpCode int
