@@ -1,6 +1,5 @@
 ## A simple bookstore API 
 #### Intended for learning communication protocols and database access in Go
-#### This project is developed using a AWS RDS running PostgreSQL
 
 [![GoDoc](https://godoc.org/github.com/github.com/gussf/go-bookstore/?status.svg)](https://pkg.go.dev/github.com/gussf/go-bookstore/?tab=doc)
 
@@ -35,7 +34,7 @@ CREATE TABLE books (
 <hr>
 
 # To Do
-* Create a CI/CD pipeline (deploy to AWS ECS Fargate)
+* Create a CI/CD pipeline (deploy to AWS ECS Fargate?)
 * Handle DELETE http method
 * Authentication (JWT?)
 * Implement gRPC?

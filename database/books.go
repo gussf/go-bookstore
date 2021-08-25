@@ -7,9 +7,13 @@ import (
 	"github.com/gussf/go-bookstore/model"
 )
 
-func (c *Connection) SelectAllBooks() ([]model.Book, error) {
+type BookModel struct {
+	Conn *Connection
+}
 
-	stmt, err := c.db.Query("SELECT * FROM books")
+func (bm BookModel) All() ([]model.Book, error) {
+
+	stmt, err := bm.Conn.DB.Query("SELECT * FROM books LIMIT 100")
 	if err != nil {
 		return nil, err
 	}
@@ -26,15 +30,16 @@ func (c *Connection) SelectAllBooks() ([]model.Book, error) {
 	return bookList, nil
 }
 
-func (c *Connection) SelectBookById(id string) (*model.Book, error) {
+func (bm BookModel) Find(id string) (*model.Book, error) {
 
-	stmt, err := c.db.Query("SELECT * FROM books WHERE id = " + id)
+	stmt, err := bm.Conn.DB.Query("SELECT * FROM books WHERE id = " + id)
 	if err != nil {
 		return nil, err
 	}
 
+	// Book not found
 	if !stmt.Next() {
-		return nil, nil
+		return nil, fmt.Errorf("{}")
 	}
 
 	book, err := scanBookFrom(stmt)
@@ -54,9 +59,9 @@ func scanBookFrom(stmt *sql.Rows) (*model.Book, error) {
 	return &book, nil
 }
 
-func (c *Connection) InsertBook(b *model.Book) error {
+func (bm BookModel) Insert(b *model.Book) error {
 	lastInsertedId := 0
-	row := c.db.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id", b.Title, b.Author, b.Copies, b.Price)
+	row := bm.Conn.DB.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id", b.Title, b.Author, b.Copies, b.Price)
 	err := row.Scan(&lastInsertedId)
 	if err != nil {
 		return err
