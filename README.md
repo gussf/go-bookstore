@@ -23,28 +23,17 @@ export DBNAME=<dbname>
 CREATE TABLE books (
     id SERIAL,
     title  varchar(100) NOT NULL,
-	author varchar(100) NOT NULL,
-	copies integer NOT NULL,
-	price  integer NOT NULL,
-	creation_date date
+    author varchar(100) NOT NULL,
+    copies integer NOT NULL,
+    price  integer NOT NULL,
+    creation_date date
 );
 ```
 
 <br>
-<hr>
 
 # To Do
 * Create a CI/CD pipeline (deploy to AWS ECS Fargate?)
 * Handle DELETE http method
 * Authentication (JWT?)
 * Implement gRPC?
-
-<hr> 
-<br>
-
-``` shell 
-# pull and run docker image
-docker pull gussf/bookstore
-# sh .env  # Load environment variables
-./run-sh
-``` 
