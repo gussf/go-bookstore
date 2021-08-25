@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,32 +10,40 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/gussf/go-bookstore/database"
-	"github.com/gussf/go-bookstore/handlers"
+	"github.com/gussf/go-bookstore/model"
 )
 
 var addr = "0.0.0.0:15000"
 
+type Env struct {
+	books database.BookModel
+}
+
 func main() {
 
-	l := log.New(os.Stdout, "bookstore ", log.LstdFlags)
-
-	conn, err := database.NewConnection()
+	r := mux.NewRouter()
+	db, err := database.NewConnection()
 	if err != nil {
-		l.Fatalf("Connection to database failed: %s\n", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
-	defer conn.Close()
 
-	bh := handlers.NewBooks(l, conn)
+	env := &Env{
+		books: database.BookModel{Conn: db},
+	}
+	fmt.Println(env)
 
-	sm := http.NewServeMux()
-	sm.Handle("/books/", bh)
+	s := r.PathPrefix("/api/v1").Subrouter()
+	s.HandleFunc("/", env.Index)
+	s.HandleFunc("/book/{id:[0-9]+}", env.singleBook).Methods("GET")
+	s.HandleFunc("/books", env.allBooks).Methods("GET")
+	s.HandleFunc("/book", env.addBook).Methods("POST")
 
-	s := http.Server{
+	srv := http.Server{
 		Addr:         addr,
-		Handler:      sm,
-		ErrorLog:     l,
+		Handler:      s,
+		ErrorLog:     log.Default(),
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
 	}
@@ -42,10 +51,9 @@ func main() {
 	fmt.Println("Starting server on", addr, "...")
 
 	go func() {
-		err := s.ListenAndServe()
+		err := srv.ListenAndServe()
 		if err != nil {
-			l.Fatalf("Failed to start server: %s\n", err)
-			os.Exit(1)
+			panic(err)
 		}
 	}()
 
@@ -54,10 +62,61 @@ func main() {
 
 	// Block until a signal is received.
 	sig := <-c
-	l.Println("Signal:", sig)
+	fmt.Println("Signal:", sig)
 
 	ctx, f := context.WithTimeout(context.Background(), 30*time.Second)
 	f()
-	s.Shutdown(ctx)
+	srv.Shutdown(ctx)
 
+}
+
+func (env *Env) Index(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode("Welcome to the go-bookstore API")
+}
+
+func (env *Env) singleBook(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	book, err := env.books.Find(vars["id"])
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	json.NewEncoder(w).Encode(book)
+}
+
+func (env *Env) allBooks(w http.ResponseWriter, r *http.Request) {
+	books, err := env.books.All()
+
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(books)
+}
+
+func (env *Env) addBook(w http.ResponseWriter, r *http.Request) {
+
+	var book model.Book
+	json.NewDecoder(r.Body).Decode(&book)
+
+	err := book.Validate()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	err = env.books.Insert(&book)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(book)
 }

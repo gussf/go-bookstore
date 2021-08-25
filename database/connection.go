@@ -9,7 +9,7 @@ import (
 )
 
 type Connection struct {
-	db *sql.DB
+	DB *sql.DB
 }
 
 // Connects to a database according to the following environment variables: DRIVER, USER, HOST, PORT, PASSWORD, DBNAME.
@@ -28,6 +28,7 @@ func NewConnection() (c *Connection, err error) {
 	connectionString := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
+	fmt.Println(connectionString)
 	db, err := sql.Open(driver, connectionString)
 	if err != nil {
 		return nil, err
@@ -44,5 +45,5 @@ func NewConnection() (c *Connection, err error) {
 
 // Closes a previously instantiated database connection
 func (c *Connection) Close() error {
-	return c.db.Close()
+	return c.DB.Close()
 }

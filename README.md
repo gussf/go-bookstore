@@ -1,6 +1,5 @@
 ## A simple bookstore API 
 #### Intended for learning communication protocols and database access in Go
-#### This project is developed using a AWS RDS running PostgreSQL
 
 [![GoDoc](https://godoc.org/github.com/github.com/gussf/go-bookstore/?status.svg)](https://pkg.go.dev/github.com/gussf/go-bookstore/?tab=doc)
 
@@ -10,13 +9,11 @@ go get github.com/gussf/go-bookstore
 ```
 
 ``` shell
-# Required environment variables in order to connect to database
-export DRIVER=<driver>  ex: postgres
-export USER=<db-user>
-export HOST=<db-endpoint>
-export PORT=<port>
-export PASSWORD=<db-password>
-export DBNAME=<dbname>
+# Run PostgreSQL container on port 5432
+docker compose up -d
+
+# Log into database
+PGPASSWORD=postgres psql -h localhost -U postgres --dbname bookstore
 ```
 
 ``` sql
@@ -24,28 +21,28 @@ export DBNAME=<dbname>
 CREATE TABLE books (
     id SERIAL,
     title  varchar(100) NOT NULL,
-	author varchar(100) NOT NULL,
-	copies integer NOT NULL,
-	price  integer NOT NULL,
-	creation_date date
+    author varchar(100) NOT NULL,
+    copies integer NOT NULL,
+    price  integer NOT NULL,
+    creation_date timestamp
 );
 ```
 
+``` shell
+# Required environment variables in order to connect to database
+export DRIVER=postgres
+export USER=postgres
+export HOST=localhost
+export PORT=5432
+export PASSWORD=postgres
+export DBNAME=bookstore
+```
+
+
 <br>
-<hr>
 
 # To Do
-* Create a CI/CD pipeline (deploy to AWS ECS Fargate)
+* Create a CI/CD pipeline (deploy to AWS ECS Fargate?)
 * Handle DELETE http method
 * Authentication (JWT?)
 * Implement gRPC?
-
-<hr> 
-<br>
-
-``` shell 
-# pull and run docker image
-docker pull gussf/bookstore
-# sh .env  # Load environment variables
-./run-sh
-``` 
