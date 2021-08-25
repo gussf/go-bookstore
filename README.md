@@ -9,13 +9,11 @@ go get github.com/gussf/go-bookstore
 ```
 
 ``` shell
-# Required environment variables in order to connect to database
-export DRIVER=<driver>  ex: postgres
-export USER=<db-user>
-export HOST=<db-endpoint>
-export PORT=<port>
-export PASSWORD=<db-password>
-export DBNAME=<dbname>
+# Run PostgreSQL container on port 5432
+docker compose up -d
+
+# Log into database
+PGPASSWORD=postgres psql -h localhost -U postgres --dbname bookstore
 ```
 
 ``` sql
@@ -26,9 +24,20 @@ CREATE TABLE books (
     author varchar(100) NOT NULL,
     copies integer NOT NULL,
     price  integer NOT NULL,
-    creation_date date
+    creation_date timestamp
 );
 ```
+
+``` shell
+# Required environment variables in order to connect to database
+export DRIVER=postgres
+export USER=postgres
+export HOST=localhost
+export PORT=5432
+export PASSWORD=postgres
+export DBNAME=bookstore
+```
+
 
 <br>
 
