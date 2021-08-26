@@ -43,6 +43,5 @@ export DBNAME=bookstore
 
 # To Do
 * Create a CI/CD pipeline (deploy to AWS ECS Fargate?)
-* Handle DELETE http method
 * Authentication (JWT?)
 * Implement gRPC?
