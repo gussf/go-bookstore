@@ -65,5 +65,8 @@ func main() {
 
 	ctx, f := context.WithTimeout(context.Background(), 30*time.Second)
 	f()
-	srv.Shutdown(ctx)
+	err = srv.Shutdown(ctx)
+	if err != nil {
+		panic(err)
+	}
 }

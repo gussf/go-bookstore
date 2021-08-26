@@ -23,7 +23,7 @@ func NewBookHandler(c *database.Connection) (bh *BookHandler) {
 }
 
 func (bh *BookHandler) Index(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode("Welcome to the go-bookstore API")
+	WriteJsonToBody(w, "Welcome to the go-bookstore API")
 }
 
 func (bh *BookHandler) FindById(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +35,7 @@ func (bh *BookHandler) FindById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(book)
+	WriteJsonToBody(w, book)
 }
 
 func (bh *BookHandler) All(w http.ResponseWriter, r *http.Request) {
@@ -47,19 +47,24 @@ func (bh *BookHandler) All(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(books)
-
+	WriteJsonToBody(w, books)
 }
 
 func (bh *BookHandler) Add(w http.ResponseWriter, r *http.Request) {
 
 	var book model.Book
-	json.NewDecoder(r.Body).Decode(&book)
 
-	err := book.Validate()
+	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err.Error())
+		WriteJsonToBody(w, err.Error())
+		return
+	}
+
+	err = book.Validate()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		WriteJsonToBody(w, err.Error())
 		return
 	}
 
@@ -70,7 +75,7 @@ func (bh *BookHandler) Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(book)
+	WriteJsonToBody(w, book)
 }
 
 func (bh *BookHandler) RemoveById(w http.ResponseWriter, r *http.Request) {
