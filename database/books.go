@@ -3,17 +3,18 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/gussf/go-bookstore/model"
 )
 
-type BookModel struct {
+type BookDAO struct {
 	Conn *Connection
 }
 
-func (bm BookModel) All() ([]model.Book, error) {
+func (bk BookDAO) SelectAll() ([]model.Book, error) {
 
-	stmt, err := bm.Conn.DB.Query("SELECT * FROM books LIMIT 100")
+	stmt, err := bk.Conn.DB.Query("SELECT * FROM books LIMIT 100")
 	if err != nil {
 		return nil, err
 	}
@@ -30,9 +31,9 @@ func (bm BookModel) All() ([]model.Book, error) {
 	return bookList, nil
 }
 
-func (bm BookModel) Find(id string) (*model.Book, error) {
+func (bk BookDAO) Select(id string) (*model.Book, error) {
 
-	stmt, err := bm.Conn.DB.Query("SELECT * FROM books WHERE id = " + id)
+	stmt, err := bk.Conn.DB.Query("SELECT * FROM books WHERE id = " + id)
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +51,34 @@ func (bm BookModel) Find(id string) (*model.Book, error) {
 	return book, nil
 }
 
+func (bk BookDAO) Insert(b *model.Book) error {
+	lastInsertedId := 0
+	var creationDate time.Time
+	row := bk.Conn.DB.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id, creation_date", b.Title, b.Author, b.Copies, b.Price)
+	err := row.Scan(&lastInsertedId, &creationDate)
+	if err != nil {
+		return err
+	}
+	b.ID = lastInsertedId
+	b.CreationDate = creationDate
+	return nil
+}
+
+func (bk BookDAO) Delete(id string) error {
+	res, err := bk.Conn.DB.Exec("delete from books where id=$1", id)
+	if err != nil {
+		return err
+	}
+
+	r, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("DELETE - Rows affected: ", r)
+	return nil
+}
+
 func scanBookFrom(stmt *sql.Rows) (*model.Book, error) {
 	var book model.Book
 	err := stmt.Scan(&book.ID, &book.Title, &book.Author, &book.Copies, &book.Price, &book.CreationDate)
@@ -57,16 +86,4 @@ func scanBookFrom(stmt *sql.Rows) (*model.Book, error) {
 		return nil, err
 	}
 	return &book, nil
-}
-
-func (bm BookModel) Insert(b *model.Book) error {
-	lastInsertedId := 0
-	row := bm.Conn.DB.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id", b.Title, b.Author, b.Copies, b.Price)
-	err := row.Scan(&lastInsertedId)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("New book inserted with id=%d\n", lastInsertedId)
-	b.ID = lastInsertedId
-	return nil
 }
