@@ -6,19 +6,16 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/gussf/go-bookstore/database"
 	"github.com/gussf/go-bookstore/model"
 )
 
 type BookHandler struct {
-	conn    *database.Connection
-	bookDAO *database.BookDAO
+	repo model.Repository
 }
 
-func NewBookHandler(c *database.Connection) (bh *BookHandler) {
+func NewBookHandler(r model.Repository) (bh *BookHandler) {
 	return &BookHandler{
-		conn:    c,
-		bookDAO: &database.BookDAO{Conn: c},
+		repo: r,
 	}
 }
 
@@ -28,7 +25,7 @@ func (bh *BookHandler) Index(w http.ResponseWriter, r *http.Request) {
 
 func (bh *BookHandler) FindById(w http.ResponseWriter, r *http.Request) {
 	id := bookIdFromUrl(r)
-	book, err := bh.bookDAO.Select(id)
+	book, err := bh.repo.Select(id)
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
@@ -39,7 +36,7 @@ func (bh *BookHandler) FindById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (bh *BookHandler) All(w http.ResponseWriter, r *http.Request) {
-	books, err := bh.bookDAO.SelectAll()
+	books, err := bh.repo.SelectAll()
 
 	if err != nil {
 		log.Println(err)
@@ -68,7 +65,7 @@ func (bh *BookHandler) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = bh.bookDAO.Insert(&book)
+	err = bh.repo.Insert(&book)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -81,7 +78,7 @@ func (bh *BookHandler) Add(w http.ResponseWriter, r *http.Request) {
 func (bh *BookHandler) RemoveById(w http.ResponseWriter, r *http.Request) {
 	id := bookIdFromUrl(r)
 
-	err := bh.bookDAO.Delete(id)
+	err := bh.repo.Delete(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -10,20 +10,19 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/gussf/go-bookstore/database"
 	"github.com/gussf/go-bookstore/handlers"
+	"github.com/gussf/go-bookstore/repository"
 )
 
 var addr = "0.0.0.0:15000"
 
 func main() {
 
-	db, err := database.NewConnection()
+	repo, err := repository.NewPostgresRepo()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-
-	books := handlers.NewBookHandler(db)
+	books := handlers.NewBookHandler(repo)
 
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api/v1").Subrouter()

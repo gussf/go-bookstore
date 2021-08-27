@@ -1,20 +1,30 @@
-package database
+package repository
 
 import (
 	"database/sql"
 	"fmt"
 	"time"
 
+	"github.com/gussf/go-bookstore/database"
 	"github.com/gussf/go-bookstore/model"
 )
 
-type BookDAO struct {
-	Conn *Connection
+// Postgres repository
+type PgBookRepository struct {
+	Conn *database.Connection
 }
 
-func (bk BookDAO) SelectAll() ([]model.Book, error) {
+func NewPostgresRepo() (*PgBookRepository, error) {
+	c, err := database.NewConnection()
+	if err != nil {
+		return nil, err
+	}
+	return &PgBookRepository{Conn: c}, nil
+}
 
-	stmt, err := bk.Conn.DB.Query("SELECT * FROM books LIMIT 100")
+func (br PgBookRepository) SelectAll() ([]model.Book, error) {
+
+	stmt, err := br.Conn.DB.Query("SELECT * FROM books LIMIT 100")
 	if err != nil {
 		return nil, err
 	}
@@ -31,9 +41,9 @@ func (bk BookDAO) SelectAll() ([]model.Book, error) {
 	return bookList, nil
 }
 
-func (bk BookDAO) Select(id string) (*model.Book, error) {
+func (br PgBookRepository) Select(id string) (*model.Book, error) {
 
-	stmt, err := bk.Conn.DB.Query("SELECT * FROM books WHERE id = " + id)
+	stmt, err := br.Conn.DB.Query("SELECT * FROM books WHERE id = " + id)
 	if err != nil {
 		return nil, err
 	}
@@ -51,10 +61,10 @@ func (bk BookDAO) Select(id string) (*model.Book, error) {
 	return book, nil
 }
 
-func (bk BookDAO) Insert(b *model.Book) error {
+func (br PgBookRepository) Insert(b *model.Book) error {
 	lastInsertedId := 0
 	var creationDate time.Time
-	row := bk.Conn.DB.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id, creation_date", b.Title, b.Author, b.Copies, b.Price)
+	row := br.Conn.DB.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id, creation_date", b.Title, b.Author, b.Copies, b.Price)
 	err := row.Scan(&lastInsertedId, &creationDate)
 	if err != nil {
 		return err
@@ -64,8 +74,8 @@ func (bk BookDAO) Insert(b *model.Book) error {
 	return nil
 }
 
-func (bk BookDAO) Delete(id string) error {
-	res, err := bk.Conn.DB.Exec("delete from books where id=$1", id)
+func (br PgBookRepository) Delete(id string) error {
+	res, err := br.Conn.DB.Exec("delete from books where id=$1", id)
 	if err != nil {
 		return err
 	}
