@@ -29,11 +29,11 @@ func main() {
 
 	getRouter := s.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", books.Index)
-	getRouter.HandleFunc("/book/{id:[0-9]+}", books.FindById).Methods("GET")
-	getRouter.HandleFunc("/books", books.All).Methods("GET")
+	getRouter.HandleFunc("/book/{id:[0-9]+}", books.FindById)
+	getRouter.HandleFunc("/books", books.All)
 
 	postRouter := s.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/book", books.Add).Methods("POST")
+	postRouter.HandleFunc("/book", books.Add)
 
 	deleteRouter := s.Methods(http.MethodDelete).Subrouter()
 	deleteRouter.HandleFunc("/book/{id:[0-9]+}", books.RemoveById)
