@@ -11,11 +11,11 @@ import (
 
 // Postgres repository
 type PgBookRepository struct {
-	Conn *database.Connection
+	Conn *database.PostgresConnection
 }
 
 func NewPostgresRepo() (*PgBookRepository, error) {
-	c, err := database.NewConnection()
+	c, err := database.NewPostgresConnection()
 	if err != nil {
 		return nil, err
 	}

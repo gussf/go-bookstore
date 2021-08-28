@@ -8,15 +8,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type Connection struct {
+type PostgresConnection struct {
 	DB *sql.DB
 }
 
 // Connects to a database according to the following environment variables: DRIVER, USER, HOST, PORT, PASSWORD, DBNAME.
 // Example:  DRIVER=postgres, USER=db_user, HOST=localhost, PORT=5432, PASSWORD=12345, DBNAME=database_name
-func NewConnection() (c *Connection, err error) {
+func NewPostgresConnection() (c *PostgresConnection, err error) {
 
-	fmt.Println("Connecting to database ...")
+	fmt.Println("Connecting to PostgreSQL database ...")
 
 	driver := os.Getenv("DRIVER")
 	host := os.Getenv("HOST")
@@ -40,10 +40,10 @@ func NewConnection() (c *Connection, err error) {
 
 	fmt.Println("Connected!")
 
-	return &Connection{db}, nil
+	return &PostgresConnection{db}, nil
 }
 
 // Closes a previously instantiated database connection
-func (c *Connection) Close() error {
+func (c *PostgresConnection) Close() error {
 	return c.DB.Close()
 }
