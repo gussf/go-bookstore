@@ -1,5 +1,5 @@
 ## A simple bookstore API 
-#### Intended for learning communication protocols and database access in Go
+#### Intended for learning RESTful implementations and database access in Go
 
 [![GoDoc](https://godoc.org/github.com/github.com/gussf/go-bookstore/?status.svg)](https://pkg.go.dev/github.com/gussf/go-bookstore/?tab=doc)
 
@@ -29,19 +29,16 @@ CREATE TABLE books (
 ```
 
 ``` shell
-# Required environment variables in order to connect to database
-export DRIVER=postgres
-export USER=postgres
-export HOST=localhost
-export PORT=5432
-export PASSWORD=postgres
-export DBNAME=bookstore
-```
+# Default target is build+lint
+make
 
+# Starting the app
+make run
+```
 
 <br>
 
 # To Do
-* Create a CI/CD pipeline (deploy to AWS ECS Fargate?)
+* Create a CD pipeline (deploy to AWS ECS Fargate?)
 * Authentication (JWT?)
 * Implement gRPC?
