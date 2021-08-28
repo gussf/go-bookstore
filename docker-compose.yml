@@ -13,6 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data/
+      - ./scripts/init_bookstore.sql:/docker-entrypoint-initdb.d/0_init.sql
 
 volumes:
   pg_data:

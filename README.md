@@ -10,22 +10,8 @@ go get github.com/gussf/go-bookstore
 
 ``` shell
 # Run PostgreSQL container on port 5432
+# It should automatically setup the database as described in ./script/init_bookstore.sql
 docker compose up -d
-
-# Log into database
-PGPASSWORD=postgres psql -h localhost -U postgres --dbname bookstore
-```
-
-``` sql
-# Table creation
-CREATE TABLE books (
-    id SERIAL,
-    title  varchar(100) NOT NULL,
-    author varchar(100) NOT NULL,
-    copies integer NOT NULL,
-    price  integer NOT NULL,
-    creation_date timestamp
-);
 ```
 
 ``` shell
