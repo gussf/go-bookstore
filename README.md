@@ -3,24 +3,28 @@
 
 [![GoDoc](https://godoc.org/github.com/github.com/gussf/go-bookstore/?status.svg)](https://pkg.go.dev/github.com/gussf/go-bookstore/?tab=doc)
 
-
-``` shell
-go get github.com/gussf/go-bookstore
-```
-
+## Setup
 ``` shell
 # Run PostgreSQL container on port 5432
 # It should automatically setup the database as described in ./script/init_bookstore.sql
 docker compose up -d
 ```
 
-``` shell
-# Default target is build+lint
-make
+<br>
 
-# Starting the app
+## Running the app
+``` shell
 make run
 ```
+
+<br>
+
+## Build + golangci-lint 
+``` shell
+# default target
+make
+```
+
 
 <br>
 
