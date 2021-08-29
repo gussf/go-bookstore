@@ -10,19 +10,19 @@ import (
 )
 
 // Postgres repository
-type PgBookRepository struct {
+type pgBookRepository struct {
 	Conn *database.PostgresConnection
 }
 
-func NewPostgresRepo() (*PgBookRepository, error) {
+func NewPostgresRepo() (*pgBookRepository, error) {
 	c, err := database.NewPostgresConnection()
 	if err != nil {
 		return nil, err
 	}
-	return &PgBookRepository{Conn: c}, nil
+	return &pgBookRepository{Conn: c}, nil
 }
 
-func (br PgBookRepository) SelectAll() ([]model.Book, error) {
+func (br pgBookRepository) SelectAll() ([]model.Book, error) {
 
 	stmt, err := br.Conn.DB.Query("SELECT * FROM books LIMIT 100")
 	if err != nil {
@@ -41,7 +41,7 @@ func (br PgBookRepository) SelectAll() ([]model.Book, error) {
 	return bookList, nil
 }
 
-func (br PgBookRepository) Select(id string) (*model.Book, error) {
+func (br pgBookRepository) Select(id string) (*model.Book, error) {
 
 	stmt, err := br.Conn.DB.Query("SELECT * FROM books WHERE id = " + id)
 	if err != nil {
@@ -61,7 +61,7 @@ func (br PgBookRepository) Select(id string) (*model.Book, error) {
 	return book, nil
 }
 
-func (br PgBookRepository) Insert(b *model.Book) error {
+func (br pgBookRepository) Insert(b *model.Book) error {
 	lastInsertedId := 0
 	var creationDate time.Time
 	row := br.Conn.DB.QueryRow("insert into books(title, author, copies, price, creation_date) values($1,$2,$3,$4, current_timestamp) RETURNING id, creation_date", b.Title, b.Author, b.Copies, b.Price)
@@ -74,7 +74,7 @@ func (br PgBookRepository) Insert(b *model.Book) error {
 	return nil
 }
 
-func (br PgBookRepository) Delete(id string) error {
+func (br pgBookRepository) Delete(id string) error {
 	res, err := br.Conn.DB.Exec("delete from books where id=$1", id)
 	if err != nil {
 		return err

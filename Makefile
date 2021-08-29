@@ -9,7 +9,7 @@ build:
 	go build main.go
 
 run: lint build
-	sh .env
+	. ./.env
 	./main
 
 
