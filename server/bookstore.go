@@ -7,8 +7,6 @@ import (
 	"github.com/gussf/go-bookstore/model"
 )
 
-var addr = "0.0.0.0:15000"
-
 type Bookstore struct {
 	router model.Router
 }
@@ -17,6 +15,6 @@ func NewBookstore(router model.Router) Bookstore {
 	return Bookstore{router}
 }
 
-func (b *Bookstore) Run() {
+func (b *Bookstore) Run(addr string) {
 	log.Fatal((http.ListenAndServe(addr, b.router)))
 }

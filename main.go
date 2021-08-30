@@ -6,6 +6,8 @@ import (
 	"github.com/gussf/go-bookstore/server"
 )
 
+var addr = "0.0.0.0:15000"
+
 func main() {
 
 	repo, err := repository.NewPostgresRepo()
@@ -16,5 +18,5 @@ func main() {
 	router := router.NewMuxRouter(repo)
 
 	server := server.NewBookstore(router)
-	server.Run()
+	server.Run(addr)
 }
