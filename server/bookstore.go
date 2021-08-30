@@ -4,14 +4,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gussf/go-bookstore/model"
+	"github.com/gussf/go-bookstore/router"
 )
 
 type Bookstore struct {
-	router model.Router
+	router router.Router
 }
 
-func NewBookstore(router model.Router) Bookstore {
+func NewBookstore(router router.Router) Bookstore {
 	return Bookstore{router}
 }
 

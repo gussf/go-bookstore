@@ -14,6 +14,7 @@ docker compose up -d
 
 ## Running the app
 ``` shell
+. .env  # Load enviroment variables to access postgres
 make run
 ```
 

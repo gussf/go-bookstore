@@ -2,21 +2,21 @@ package router
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/gussf/go-bookstore/controller"
 	"github.com/gussf/go-bookstore/model"
 )
 
 type MuxRouter struct {
-	r    *mux.Router
-	repo model.Repository
+	r           *mux.Router
+	bookService controller.Controller
 }
 
-func NewMuxRouter(repo model.Repository) *MuxRouter {
+func NewMuxRouter(bc controller.Controller) *MuxRouter {
 	r := mux.NewRouter()
-	muxR := &MuxRouter{r, repo}
+	muxR := &MuxRouter{r, bc}
 	muxR.setRoutes()
 
 	return muxR
@@ -47,74 +47,68 @@ func (m *MuxRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (m *MuxRouter) Index(w http.ResponseWriter, r *http.Request) {
-	WriteJsonToBody(w, "Welcome to the go-bookstore API")
+	WriteResponse(w, "Welcome to the go-bookstore API", http.StatusOK)
 }
 
 func (m *MuxRouter) FindById(w http.ResponseWriter, r *http.Request) {
 	id := bookIdFromUrl(r)
-	book, err := m.repo.Select(id)
+	book, err := m.bookService.Find(id)
 
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		WriteResponse(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	WriteJsonToBody(w, book)
+	WriteResponse(w, book, http.StatusOK)
 }
 
 func (m *MuxRouter) All(w http.ResponseWriter, r *http.Request) {
-	books, err := m.repo.SelectAll()
-
+	books, err := m.bookService.ListAll()
 	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		WriteResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	WriteJsonToBody(w, books)
+	WriteResponse(w, books, http.StatusOK)
 }
 
 func (m *MuxRouter) Add(w http.ResponseWriter, r *http.Request) {
-
 	var book model.Book
 
 	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		WriteJsonToBody(w, err.Error())
+		WriteResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = book.Validate()
+	err = m.bookService.Validate(&book)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		WriteJsonToBody(w, err.Error())
+		WriteResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = m.repo.Insert(&book)
+	err = m.bookService.Add(&book)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		WriteResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	WriteJsonToBody(w, book)
+	WriteResponse(w, book, http.StatusCreated)
 }
 
 func (m *MuxRouter) RemoveById(w http.ResponseWriter, r *http.Request) {
 	id := bookIdFromUrl(r)
 
-	err := m.repo.Delete(id)
+	err := m.bookService.Remove(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		WriteResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	WriteResponse(w, "", http.StatusNoContent)
 }
 
-// Returns the book id sent by the client, parsed by the router
+//Returns the book id sent by the client, parsed by the router
 func bookIdFromUrl(r *http.Request) string {
 	idStr := mux.Vars(r)["id"]
 	return idStr
