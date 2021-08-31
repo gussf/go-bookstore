@@ -93,7 +93,7 @@ func TestMuxRouter_FindAllBooks(t *testing.T) {
 	}{
 		{
 			name:               "Find all books",
-			expectedLength:     2,
+			expectedLength:     realLength,
 			expectedHTTPStatus: http.StatusOK,
 		},
 	}
@@ -108,8 +108,8 @@ func TestMuxRouter_FindAllBooks(t *testing.T) {
 			var found []m.Book
 			_ = json.Unmarshal(response.Body.Bytes(), &found)
 
-			if len(found) != realLength {
-				t.Errorf("did not get correct number of books, got %d, want %d", len(found), realLength)
+			if len(found) != tt.expectedLength {
+				t.Errorf("did not get correct number of books, got %d, want %d", len(found), tt.expectedLength)
 			}
 
 			assertStatus(t, response.Code, tt.expectedHTTPStatus)

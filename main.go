@@ -1,10 +1,12 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/gussf/go-bookstore/books"
 	"github.com/gussf/go-bookstore/repository"
 	"github.com/gussf/go-bookstore/router"
-	"github.com/gussf/go-bookstore/server"
 )
 
 var addr = "0.0.0.0:15000"
@@ -20,6 +22,5 @@ func main() {
 
 	router := router.NewMuxRouter(bookC)
 
-	server := server.NewBookstore(router)
-	server.Run(addr)
+	log.Fatal(http.ListenAndServe(addr, router))
 }

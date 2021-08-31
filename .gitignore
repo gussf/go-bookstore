@@ -16,3 +16,5 @@ run.sh
 bookstore
 go-bookstore
 main
+
+*.html
