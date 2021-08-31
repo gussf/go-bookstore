@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gussf/go-bookstore/controller"
+	"github.com/gussf/go-bookstore/books"
 	"github.com/gussf/go-bookstore/repository"
 	"github.com/gussf/go-bookstore/router"
 	"github.com/gussf/go-bookstore/server"
@@ -16,7 +16,7 @@ func main() {
 		panic(err)
 	}
 
-	bookC := controller.NewBookService(repo)
+	bookC := books.NewService(repo)
 
 	router := router.NewMuxRouter(bookC)
 

@@ -5,18 +5,18 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/gussf/go-bookstore/controller"
+	"github.com/gussf/go-bookstore/books"
 	"github.com/gussf/go-bookstore/model"
 )
 
 type MuxRouter struct {
 	r           *mux.Router
-	bookService controller.Controller
+	bookService books.Service
 }
 
-func NewMuxRouter(bc controller.Controller) *MuxRouter {
+func NewMuxRouter(bs books.Service) *MuxRouter {
 	r := mux.NewRouter()
-	muxR := &MuxRouter{r, bc}
+	muxR := &MuxRouter{r, bs}
 	muxR.setRoutes()
 
 	return muxR
