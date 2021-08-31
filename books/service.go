@@ -1,6 +1,8 @@
 package books
 
 import (
+	"fmt"
+
 	"github.com/gussf/go-bookstore/model"
 )
 
@@ -15,6 +17,7 @@ func NewService(repo model.Repository) Service {
 }
 
 func (bc Service) Add(book *model.Book) error {
+	fmt.Println(book.Title)
 	return bc.repo.Insert(book)
 }
 

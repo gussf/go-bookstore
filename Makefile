@@ -8,10 +8,11 @@ lint:
 	@golangci-lint run
 
 build:
+	@go test ./...
 	@go build main.go
 
-run: lint build
-	@./main
+run: 
+	@go run main.go
 
 
 
