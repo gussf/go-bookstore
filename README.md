@@ -20,7 +20,7 @@ make run
 
 <br>
 
-## Test + Build + golangci-lint 
+## Lint + Test + Build 
 ``` shell
 # default target
 make
