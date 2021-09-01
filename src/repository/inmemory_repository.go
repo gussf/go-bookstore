@@ -3,22 +3,22 @@ package repository
 import (
 	"errors"
 
-	"github.com/gussf/go-bookstore/model"
+	bookstore "github.com/gussf/go-bookstore/src"
 )
 
 // Postgres repository
 type InMemRepository struct {
-	BookList map[string]model.Book
+	BookList map[string]bookstore.BookDTO
 }
 
 func NewInMemoryRepo() (*InMemRepository, error) {
-	m := make(map[string]model.Book)
+	m := make(map[string]bookstore.BookDTO)
 	return &InMemRepository{BookList: m}, nil
 }
 
-func (im InMemRepository) SelectAll() ([]model.Book, error) {
+func (im InMemRepository) SelectAll() ([]bookstore.BookDTO, error) {
 
-	var bks []model.Book
+	var bks []bookstore.BookDTO
 
 	for _, b := range im.BookList {
 		bks = append(bks, b)
@@ -27,7 +27,7 @@ func (im InMemRepository) SelectAll() ([]model.Book, error) {
 	return bks, nil
 }
 
-func (im InMemRepository) Select(id string) (*model.Book, error) {
+func (im InMemRepository) Select(id string) (*bookstore.BookDTO, error) {
 	book, ok := im.BookList[id]
 	if !ok {
 		return nil, errors.New("book with id=" + id + " not found")
@@ -35,7 +35,7 @@ func (im InMemRepository) Select(id string) (*model.Book, error) {
 	return &book, nil
 }
 
-func (im InMemRepository) Insert(b *model.Book) error {
+func (im InMemRepository) Insert(b *bookstore.BookDTO) error {
 	return nil
 }
 

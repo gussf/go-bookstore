@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gussf/go-bookstore/books"
-	"github.com/gussf/go-bookstore/repository"
-	"github.com/gussf/go-bookstore/router"
+	"github.com/gussf/go-bookstore/src/books"
+	"github.com/gussf/go-bookstore/src/repository"
+	"github.com/gussf/go-bookstore/src/router"
 )
 
 var addr = "0.0.0.0:15000"

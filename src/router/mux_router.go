@@ -5,8 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/gussf/go-bookstore/books"
-	"github.com/gussf/go-bookstore/model"
+	"github.com/gussf/go-bookstore/src/books"
 )
 
 type MuxRouter struct {
@@ -73,7 +72,7 @@ func (m *MuxRouter) All(w http.ResponseWriter, r *http.Request) {
 }
 
 func (m *MuxRouter) Add(w http.ResponseWriter, r *http.Request) {
-	var book model.Book
+	var book books.Book
 
 	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {

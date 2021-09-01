@@ -1,20 +1,16 @@
-package model
+package books
 
 import (
-	"time"
-
 	"github.com/go-playground/validator"
 )
 
 var validate *validator.Validate
 
 type Book struct {
-	ID           int
-	Title        string `json:"title" validate:"required"`
-	Author       string `json:"author" validate:"required"`
-	Copies       int    `json:"copies" validate:"required"`
-	Price        int    `json:"price" validate:"required"`
-	CreationDate time.Time
+	Title  string `validate:"required"`
+	Author string `validate:"required"`
+	Copies int    `validate:"required"`
+	Price  int    `validate:"required"`
 }
 
 func NewBook(title string, author string, copies int, price int) (book *Book, err error) {
