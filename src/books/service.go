@@ -1,8 +1,6 @@
 package books
 
 import (
-	"fmt"
-
 	bookstore "github.com/gussf/go-bookstore/src"
 )
 
@@ -16,9 +14,9 @@ func NewService(repo bookstore.Repository) Service {
 	return Service{repo: repo}
 }
 
-func (bc Service) Add(book *bookstore.BookDTO) error {
-	fmt.Println(book.Title)
-	return bc.repo.Insert(book)
+func (bc Service) Add(b *Book) (*bookstore.BookDTO, error) {
+	bDto := bc.repo.NewBook(b.Title, b.Author, b.Copies, b.Price)
+	return bDto, bc.repo.Insert(bDto)
 }
 
 func (bc Service) Find(id string) (*bookstore.BookDTO, error) {
@@ -33,7 +31,6 @@ func (bc Service) ListAll() ([]bookstore.BookDTO, error) {
 	return bc.repo.SelectAll()
 }
 
-// Could have more than just struct-validation which might not fit well inside "bookstore"
-func (bc Service) Validate(b *bookstore.BookDTO) error {
-	return b.Validate()
+func (bc Service) NewBook(title string, author string, copies int, price int64) (book *Book, err error) {
+	return NewBook(title, author, copies, price)
 }

@@ -18,13 +18,13 @@ var repo bookstore.Repository
 var svc books.Service
 var r bookstore.Router
 
-var Books map[string]books.Book
+var Books map[string]bookstore.BookDTO
 var realLength int
 
 func TestMain(m *testing.M) {
 	setup()
 
-	code := bookstore.Run()
+	code := m.Run()
 	os.Exit(code)
 }
 
@@ -74,7 +74,7 @@ func TestMuxRouter_FindBookByID(t *testing.T) {
 
 			r.ServeHTTP(response, request)
 
-			var found bookstore.Book
+			var found bookstore.BookResponse
 			_ = json.Unmarshal(response.Body.Bytes(), &found)
 
 			assertAttribute(t, "Title", found.Title, tt.expectedTitle)
@@ -105,7 +105,7 @@ func TestMuxRouter_FindAllBooks(t *testing.T) {
 
 			r.ServeHTTP(response, request)
 
-			var found []bookstore.Book
+			var found []bookstore.BookResponse
 			_ = json.Unmarshal(response.Body.Bytes(), &found)
 
 			if len(found) != tt.expectedLength {

@@ -10,10 +10,10 @@ type Book struct {
 	Title  string `validate:"required"`
 	Author string `validate:"required"`
 	Copies int    `validate:"required"`
-	Price  int    `validate:"required"`
+	Price  int64  `validate:"required"`
 }
 
-func NewBook(title string, author string, copies int, price int) (book *Book, err error) {
+func NewBook(title string, author string, copies int, price int64) (book *Book, err error) {
 	book = &Book{Title: title, Author: author, Copies: copies, Price: price}
 
 	err = book.Validate()

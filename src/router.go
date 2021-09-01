@@ -2,6 +2,7 @@ package bookstore
 
 import (
 	"net/http"
+	"time"
 )
 
 type BookRequest struct {
@@ -9,16 +10,17 @@ type BookRequest struct {
 	Title  string `json:"title"`
 	Author string `json:"author"`
 	Copies int    `json:"copies"`
-	Price  int    `json:"price"`
+	Price  int64  `json:"price"`
 }
 
 type BookResponse struct {
-	ID           int    `json:"id"`
-	Title        string `json:"title"`
-	Author       string `json:"author"`
-	Copies       int    `json:"copies"`
-	Price        int    `json:"price"`
-	CreationDate int    `json:"created_at"`
+	ID           int       `json:"id"`
+	Title        string    `json:"title"`
+	Author       string    `json:"author"`
+	Copies       int       `json:"copies"`
+	Price        int64     `json:"price"`
+	CreationDate time.Time `json:"created_at"`
+	Route        string    `json:"route"`
 }
 
 type Router interface {

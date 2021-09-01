@@ -17,6 +17,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer repo.CloseConnection()
 
 	bookC := books.NewService(repo)
 

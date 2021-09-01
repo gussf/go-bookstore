@@ -16,6 +16,15 @@ func NewInMemoryRepo() (*InMemRepository, error) {
 	return &InMemRepository{BookList: m}, nil
 }
 
+func (im InMemRepository) NewBook(title string, author string, copies int, price int64) *bookstore.BookDTO {
+	return &bookstore.BookDTO{
+		Title:  title,
+		Author: author,
+		Copies: copies,
+		Price:  price,
+	}
+}
+
 func (im InMemRepository) SelectAll() ([]bookstore.BookDTO, error) {
 
 	var bks []bookstore.BookDTO
@@ -41,4 +50,7 @@ func (im InMemRepository) Insert(b *bookstore.BookDTO) error {
 
 func (im InMemRepository) Delete(id string) error {
 	return nil
+}
+
+func (im InMemRepository) CloseConnection() {
 }

@@ -6,20 +6,28 @@ import (
 	"time"
 
 	bookstore "github.com/gussf/go-bookstore/src"
-	"github.com/gussf/go-bookstore/src/database"
 )
 
 // Postgres repository
 type pgBookRepository struct {
-	Conn *database.PostgresConnection
+	Conn *PostgresConnection
 }
 
 func NewPostgresRepo() (*pgBookRepository, error) {
-	c, err := database.NewPostgresConnection()
+	c, err := NewPostgresConnection()
 	if err != nil {
 		return nil, err
 	}
 	return &pgBookRepository{Conn: c}, nil
+}
+
+func (br pgBookRepository) NewBook(title string, author string, copies int, price int64) *bookstore.BookDTO {
+	return &bookstore.BookDTO{
+		Title:  title,
+		Author: author,
+		Copies: copies,
+		Price:  price,
+	}
 }
 
 func (br pgBookRepository) SelectAll() ([]bookstore.BookDTO, error) {
@@ -96,4 +104,8 @@ func scanBookFrom(stmt *sql.Rows) (*bookstore.BookDTO, error) {
 		return nil, err
 	}
 	return &book, nil
+}
+
+func (br pgBookRepository) CloseConnection() {
+	_ = br.Conn.Close()
 }
