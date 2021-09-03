@@ -18,7 +18,7 @@ func NewBook(title string, author string, copies int, price int64) (book *Book, 
 
 	err = book.Validate()
 	if err != nil {
-		return nil, err
+		return nil, ErrNewBookValidationFailed
 	}
 	return book, nil
 }
