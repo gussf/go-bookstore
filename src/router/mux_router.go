@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/gussf/go-bookstore/books"
-	"github.com/gussf/go-bookstore/model"
+	bookstore "github.com/gussf/go-bookstore/src"
+	"github.com/gussf/go-bookstore/src/books"
 )
 
 type MuxRouter struct {
@@ -59,21 +59,29 @@ func (m *MuxRouter) FindById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	WriteResponse(w, book, http.StatusOK)
+	bResp := responseFromService(book)
+	WriteResponse(w, bResp, http.StatusOK)
 }
 
 func (m *MuxRouter) All(w http.ResponseWriter, r *http.Request) {
 	books, err := m.bookService.ListAll()
+
 	if err != nil {
 		WriteResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	WriteResponse(w, books, http.StatusOK)
+	var bResp []bookstore.BookResponse
+	for _, v := range books {
+		b := responseFromService(&v)
+		bResp = append(bResp, b)
+	}
+
+	WriteResponse(w, bResp, http.StatusOK)
 }
 
 func (m *MuxRouter) Add(w http.ResponseWriter, r *http.Request) {
-	var book model.Book
+	var book bookstore.BookRequest
 
 	err := json.NewDecoder(r.Body).Decode(&book)
 	if err != nil {
@@ -81,19 +89,19 @@ func (m *MuxRouter) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = m.bookService.Validate(&book)
+	b, err := m.bookService.NewBook(book.Title, book.Author, book.Copies, book.Price)
 	if err != nil {
 		WriteResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = m.bookService.Add(&book)
+	bdto, err := m.bookService.Add(b)
 	if err != nil {
 		WriteResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	WriteResponse(w, book, http.StatusCreated)
+	WriteResponse(w, responseFromService(bdto), http.StatusCreated)
 }
 
 func (m *MuxRouter) RemoveById(w http.ResponseWriter, r *http.Request) {
@@ -112,4 +120,16 @@ func (m *MuxRouter) RemoveById(w http.ResponseWriter, r *http.Request) {
 func bookIdFromUrl(r *http.Request) string {
 	idStr := mux.Vars(r)["id"]
 	return idStr
+}
+
+func responseFromService(b *bookstore.BookDTO) bookstore.BookResponse {
+	return bookstore.BookResponse{
+		ID:           b.ID,
+		Title:        b.Title,
+		Author:       b.Author,
+		Copies:       b.Copies,
+		Price:        b.Price,
+		CreationDate: b.CreationDate,
+		Route:        "Mux",
+	}
 }

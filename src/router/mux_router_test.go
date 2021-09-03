@@ -9,16 +9,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gussf/go-bookstore/books"
-	m "github.com/gussf/go-bookstore/model"
-	"github.com/gussf/go-bookstore/repository"
+	bookstore "github.com/gussf/go-bookstore/src"
+	"github.com/gussf/go-bookstore/src/books"
+	"github.com/gussf/go-bookstore/src/repository"
 )
 
-var repo m.Repository
+var repo bookstore.Repository
 var svc books.Service
-var r m.Router
+var r bookstore.Router
 
-var Books map[string]m.Book
+var Books map[string]bookstore.BookDTO
 var realLength int
 
 func TestMain(m *testing.M) {
@@ -30,7 +30,7 @@ func TestMain(m *testing.M) {
 
 func setup() {
 
-	Books = map[string]m.Book{
+	Books = map[string]bookstore.BookDTO{
 		"1": {ID: 1, Title: "Game of Thrones", Author: "George", Copies: 1, Price: 3000, CreationDate: time.Now()},
 		"2": {ID: 2, Title: "Alice in Wonderland", Author: "Lewis", Copies: 5, Price: 1500, CreationDate: time.Now()},
 	}
@@ -74,7 +74,7 @@ func TestMuxRouter_FindBookByID(t *testing.T) {
 
 			r.ServeHTTP(response, request)
 
-			var found m.Book
+			var found bookstore.BookResponse
 			_ = json.Unmarshal(response.Body.Bytes(), &found)
 
 			assertAttribute(t, "Title", found.Title, tt.expectedTitle)
@@ -105,7 +105,7 @@ func TestMuxRouter_FindAllBooks(t *testing.T) {
 
 			r.ServeHTTP(response, request)
 
-			var found []m.Book
+			var found []bookstore.BookResponse
 			_ = json.Unmarshal(response.Body.Bytes(), &found)
 
 			if len(found) != tt.expectedLength {

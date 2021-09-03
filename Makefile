@@ -3,16 +3,16 @@
 DEFAULT: all
 
 lint:
-	@go fmt
-	@go vet
+	@go fmt ./...
+	@go vet ./...
 	@golangci-lint run
 
 build:
-	@go test ./...
-	@go build main.go
+	@go test -v ./...
+	@go build ./...
 
 run: 
-	@go run main.go
+	@go run ./...
 
 
 
